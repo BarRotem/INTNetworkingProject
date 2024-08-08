@@ -24,7 +24,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.PUBLIC_INSTANCE_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          echo -e "Host bastion\n\tUser ubuntu\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+          echo -e "Host bastion\n\tUser ubuntu\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - name: Parse instances IP address
         id: parse_ip
         run: |
