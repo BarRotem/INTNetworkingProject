@@ -1,26 +1,42 @@
 Local DNS Server IP
 -------------------
-<ip-here>
+127.0.0.53
 
 
 
 Default gateway IP
 -------------------
-<ip-here>
+10.0.0.1
 
 
 
 DHCP IP allocation sys-logs
 -------------------
-<logs-here>
+2024-08-02T10:19:14.874347+00:00 ip-10-0-0-170 dhcpcd[443]: dhcpcd-10.0.6 starting
+2024-08-02T10:19:14.874354+00:00 ip-10-0-0-170 dhcpcd[446]: DUID 00:01:00:01:2e:3e:76:b1:06:48:9c:b5:52:45
+2024-08-02T10:19:14.874358+00:00 ip-10-0-0-170 dhcpcd[446]: ens5: IAID 9c:b5:52:45
+2024-08-02T10:19:14.874362+00:00 ip-10-0-0-170 dhcpcd[446]: ens5: soliciting a DHCP lease
+2024-08-02T10:19:14.874366+00:00 ip-10-0-0-170 dhcpcd[446]: ens5: offered 10.0.0.170 from 10.0.0.1
+2024-08-02T10:19:14.874371+00:00 ip-10-0-0-170 dhcpcd[446]: ens5: leased 10.0.0.170 for 3600 seconds
+2024-08-02T10:19:14.874375+00:00 ip-10-0-0-170 dhcpcd[446]: ens5: adding route to 10.0.0.0/24
+2024-08-02T10:19:14.874382+00:00 ip-10-0-0-170 dhcpcd[446]: ens5: adding default route via 10.0.0.1
+2024-08-02T10:19:14.874386+00:00 ip-10-0-0-170 dhcpcd[446]: control command: /usr/sbin/dhcpcd --dumplease --ipv4only ens5
+
 
 
 
 Public to private num of hops
 -------------------
-<answer-here>
+It took a single hop from the public to the private vm.
+This is very odd since we would expect a gateway (in this case, the IGW due to route table) to route the data and report the hop in the command's output.
+However, VPC internal routers DO NOT DECREMENT the ttl value specified in the traceroute packets, ultimately not showing up in the command output.
+This is the reason for the "single hop" between the public and private VM, which we would have expected to be 2.
+As evidence, issuing the traceroute command to google.com yields similar output - not showing the IGW as the immediate hop.
 
 
 DNS queries from the private instance
 -------------------
-<answer-here>
+I am able to resolve public website addresses from the private instance.
+This is due to the DNS resolver (Amazon route53) being configured by default as part of my DHCP option set, available under the vpc configuration.
+When the vpc was first created, an ip address of 10.0.0.2 was reserved for the DNS resolver as part of the primary vpc network (10.0.0.0/16).
+All vpc resources may pass ns lookups to this DNS server, and receive an answer.
