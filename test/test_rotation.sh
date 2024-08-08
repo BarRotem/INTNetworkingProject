@@ -9,7 +9,7 @@ echo -e "-----------------------------------------------------------------------
 echo $OLD_KEYS
 
 echo -e "\n\nCopying the rotation script into your public instance."
-echo -e "Command: scp ssh_keys_rotation.sh ubuntu@$PUBLIC_IP:/home/ubuntu/\n\n"
+echo -e "Command: scp -i $KEY_PATH ssh_keys_rotation.sh ubuntu@$PUBLIC_IP:/home/ubuntu/\n\n"
 
 scp -i $KEY_PATH ssh_keys_rotation.sh ubuntu@$PUBLIC_IP:/home/ubuntu/
 
