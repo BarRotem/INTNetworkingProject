@@ -1,6 +1,6 @@
 #!/bin/bash
 #Implement all 6 steps of (simplified) TLS Handshake !
-#Avoid bad code invocations  :
+#Avoid bad code invocations   :
 server_ip=${1}
 if [[ -z ${server_ip} ]]
 then
