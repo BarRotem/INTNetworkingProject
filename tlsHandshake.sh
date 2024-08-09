@@ -44,6 +44,7 @@ echo -e "\n\nServer Hello : Received. Relevant information stored in $(pwd)"
 
 #Step 2 - Server Certificate Verification
 echo -e "\nStep 3 : Server Certificate Verification\n----------------------------------------"
+wget -q https://exit-zero-academy.github.io/DevOpsTheHardWayAssets/networking_project/cert-ca-aws.pem
 openssl verify -CAfile cert-ca-aws.pem cert.pem
 if [[ $? -eq 0 ]]
 then
@@ -80,7 +81,7 @@ fi
 echo "Master-key exchange Succeeded !"
 curl -s -X POST ${server_ip}:${LISTENING_PORT}/${endpoint} -H "Content-Type: application/json" -d "${payload}" -o master-key-exchange-response.txt
 
-echo -e "\nStep 5 : Client message verification\n------------------------------------"
+echo -e "\nStep 5&6 : Client message verification\n---------------------------------------"
 #Master-key exchange succeeded. Or has it?
 #The client must now verify that the message responded by the server, is indeed equal to the plaintext message is has encrypted.
 #Define variables
