@@ -98,7 +98,7 @@ cat encrypted-sample-message-decoded.txt | openssl enc -d -aes-256-cbc -pbkdf2 -
 #Verify message equality
 server_sample_message_dec=$(cat server-sample-message-decrypted.txt)
 echo "Received the following sampleMessage from server : ${server_sample_message_dec}"
-if [[ ${server_sample_message_dec}=${sample_message} ]]
+if [[ ${server_sample_message_dec} = ${sample_message} ]]
 then
   echo "Client-Server TLS handshake has been completed successfully!"
 else
