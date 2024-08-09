@@ -17,7 +17,7 @@ payload='{"version": "1.3","ciphersSuites": ["TLS_AES_128_GCM_SHA256","TLS_CHACH
 
 echo -e "\nStep 1 : Perform Client Hello\n-----------------------------"
 #Check status code of Client Hello. Continue TLS Handshake only for code 200.
-status_code=$(curl -s -w '%{http_code}' -X POST ${server_ip}:${LISTENING_PORT}/${endpoint} -H "Content-Type: application/json" -d "${payload}" -o /dev/null)
+status_code=$(curl -s -w '%{http_code}' -X POST ${server_ip}:${LISTENING_PORT}/${endpoint} -H "Content-Type: application/json" -d "${payload}" -o server_hello.txt)
 if [[ ${status_code} -ne 200 ]]
 then
   echo "Client Hello : Failure"
@@ -28,8 +28,8 @@ echo "Client Hello : Success"
 
 #Step 2 - Server Hello
 echo -e "\nStep 2 : Receive Server Hello\n-----------------------------"
-#Request the same resource as in Client Hello. We are here only if code is 200.
-curl -s -X POST ${server_ip}:${LISTENING_PORT}/${endpoint} -H "Content-Type: application/json" -d "${payload}" -o server_hello.txt
+#We are here only if code is 200, meaning client hello succeeded.
+#FIX:curl only once to the server.curl -s -X POST ${server_ip}:${LISTENING_PORT}/${endpoint} -H "Content-Type: application/json" -d "${payload}" -o server_hello.txt
 cat server_hello.txt
 #Extract relevant elements from server_hello.txt to be used later.
 SESSION_ID=$(jq '.sessionID' server_hello.txt)
@@ -69,7 +69,7 @@ endpoint="keyexchange"
 payload="{\"sessionID\": ${SESSION_ID},\"masterKey\": \"${master_key_enc}\",\"sampleMessage\": \"${sample_message}\"}"
 #Send the encrypted data to the server
 echo -e "Sending the following payload to the server : ${payload}"
-status_code=$(curl -s -w '%{http_code}' -X POST ${server_ip}:${LISTENING_PORT}/${endpoint} -H "Content-Type: application/json" -d "${payload}" -o /dev/null)
+status_code=$(curl -s -w '%{http_code}' -X POST ${server_ip}:${LISTENING_PORT}/${endpoint} -H "Content-Type: application/json" -d "${payload}" -o master-key-exchange-response.txt)
 #Check master-key exchange status code
 if [[ ${status_code} -ne 200 ]]
 then
@@ -79,7 +79,7 @@ fi
 
 #We are here if master-key exchange has succeeded !
 echo "Master-key exchange Succeeded !"
-curl -s -X POST ${server_ip}:${LISTENING_PORT}/${endpoint} -H "Content-Type: application/json" -d "${payload}" -o master-key-exchange-response.txt
+#FIX:curl only once to the server.curl -s -X POST ${server_ip}:${LISTENING_PORT}/${endpoint} -H "Content-Type: application/json" -d "${payload}" -o master-key-exchange-response.txt
 
 echo -e "\nStep 5&6 : Client message verification\n---------------------------------------"
 #Master-key exchange succeeded. Or has it?
